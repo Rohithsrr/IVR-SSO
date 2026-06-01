@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Twilio Flix Access | Sign In</title>
+  <style>
+    :root {
+      --bg1: #0f172a;
+      --bg2: #111827;
+      --card: rgba(17, 24, 39, 0.82);
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #f43f5e;
+      --accent2: #fb7185;
+      --input: rgba(255, 255, 255, 0.06);
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(244, 63, 94, 0.20), transparent 25%),
+        radial-gradient(circle at bottom right, rgba(251, 113, 133, 0.14), transparent 30%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      padding: 24px;
+    }
+
+    .shell {
+      width: 100%;
+      max-width: 980px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .brand-panel, .login-card {
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+
+    .brand-panel {
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      position: relative;
+      min-height: 520px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      width: fit-content;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(244, 63, 94, 0.12);
+      border: 1px solid rgba(244, 63, 94, 0.25);
+      color: #fecdd3;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .badge-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 0 0 6px rgba(244, 63, 94, 0.12);
+    }
+
+    h1 {
+      margin: 18px 0 12px;
+      font-size: clamp(2.2rem, 4vw, 4rem);
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+    }
+
+    .lead {
+      max-width: 540px;
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: #cbd5e1;
+      margin: 0;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 28px;
+    }
+
+    .feature {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .feature strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.98rem;
+    }
+
+    .feature span {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    .login-card {
+      padding: 34px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .login-card h2 {
+      margin: 0 0 8px;
+      font-size: 1.8rem;
+    }
+
+    .login-card p {
+      margin: 0 0 24px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    form {
+      display: grid;
+      gap: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.92rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .field {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: var(--input);
+      color: var(--text);
+      outline: none;
+      font-size: 1rem;
+      transition: border-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+    }
+
+    .field:focus {
+      border-color: rgba(244, 63, 94, 0.7);
+      box-shadow: 0 0 0 4px rgba(244, 63, 94, 0.12);
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .remember {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      user-select: none;
+    }
+
+    .remember input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent);
+    }
+
+    .link {
+      color: #fda4af;
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+
+    .link:hover { text-decoration: underline; }
+
+    .btn {
+      border: none;
+      padding: 14px 18px;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 700;
+      color: white;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      cursor: pointer;
+      transition: transform 0.15s ease, filter 0.2s ease;
+      box-shadow: 0 12px 30px rgba(244, 63, 94, 0.28);
+    }
+
+    .btn:hover { filter: brightness(1.05); }
+    .btn:active { transform: translateY(1px); }
+
+    .hint {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .message {
+      display: none;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
+    .message.error {
+      display: block;
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.24);
+      color: #fecaca;
+    }
+
+    .message.success {
+      display: block;
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.24);
+      color: #bbf7d0;
+    }
+
+    .footer-note {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 0.85rem;
+      text-align: center;
+    }
+
+    @media (max-width: 860px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+      .brand-panel {
+        min-height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="brand-panel">
+      <div>
+        <div class="badge"><span class="badge-dot"></span> Twilio Flix Access</div>
+        <h1>Secure sign-in for your access portal</h1>
+        <p class="lead">
+          A simple password-based login page for internal access. Connect this form to your authentication backend,
+          Twilio workflow, or identity provider whenever you are ready.
+        </p>
+
+        <div class="features">
+          <div class="feature">
+            <strong>Password login</strong>
+            <span>Users sign in with their registered email and password.</span>
+          </div>
+          <div class="feature">
+            <strong>Ready for backend</strong>
+            <span>Replace the demo handler with API calls or SSO integration.</span>
+          </div>
+          <div class="feature">
+            <strong>Responsive design</strong>
+            <span>Works smoothly on desktop, tablet, and mobile screens.</span>
+          </div>
+          <div class="feature">
+            <strong>Clean UI</strong>
+            <span>Simple layout that is easy to customize for your brand.</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="hint">Tip: this is a front-end only demo. For real security, validate credentials on the server and use HTTPS.</p>
+    </section>
+
+    <section class="login-card">
+      <h2>Sign in</h2>
+      <p>Enter your account details to continue.</p>
+
+      <div id="message" class="message" aria-live="polite"></div>
+
+      <form id="loginForm" autocomplete="on">
+        <div>
+          <label for="email">Email</label>
+          <input id="email" class="field" type="email" placeholder="name@company.com" required />
+        </div>
+
+        <div>
+          <label for="password">Password</label>
+          <input id="password" class="field" type="password" placeholder="Enter your password" required />
+        </div>
+
+        <div class="row">
+          <label class="remember">
+            <input type="checkbox" id="remember" />
+            Remember me
+          </label>
+          <a href="#" class="link">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="btn">Sign in</button>
+      </form>
+
+      <div class="footer-note">By signing in, you agree to your organization’s access policy.</div>
+    </section>
+  </main>
+
+  <script>
+    const form = document.getElementById('loginForm');
+    const message = document.getElementById('message');
+    const email = document.getElementById('email');
+    const password = document.getElementById('password');
+
+    function showMessage(text, type) {
+      message.textContent = text;
+      message.className = `message ${type}`;
+      message.style.display = 'block';
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const emailValue = email.value.trim();
+      const passwordValue = password.value.trim();
+
+      if (!emailValue || !passwordValue) {
+        showMessage('Please fill in both email and password.', 'error');
+        return;
+      }
+
+      // Demo-only validation.
+      // Replace this with a real API request to your backend authentication endpoint.
+      if (emailValue === 'demo@twilioflix.com' && passwordValue === 'Password@123') {
+        showMessage('Login successful. Redirecting to the dashboard...', 'success');
+        setTimeout(() => {
+          window.location.href = '/dashboard';
+        }, 1200);
+      } else {
+        showMessage('Invalid email or password. Please try again.', 'error');
+      }
+    });
+  </script>
+</body>
+</html>
